@@ -5,17 +5,21 @@ volumes:
 services:
   product-service:          # PocketBase #1: koleksi products
     build: ./pocketbase
+    command: ["pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data", "--migrationsDir=/pb_migrations", "--automigrate=false"]
     restart: unless-stopped
     volumes:
       - product_data:/pb_data
+      - ./migrations/product:/pb_migrations:ro
     ports:
       - "8091:8090"         # dashboard: http://IP_SERVER:8091/_/
 
   account-service:          # PocketBase #2: users + favorites
     build: ./pocketbase
+    command: ["pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data", "--migrationsDir=/pb_migrations", "--automigrate=false"]
     restart: unless-stopped
     volumes:
       - account_data:/pb_data
+      - ./migrations/account:/pb_migrations:ro
     ports:
       - "8092:8090"         # dashboard: http://IP_SERVER:8092/_/
 

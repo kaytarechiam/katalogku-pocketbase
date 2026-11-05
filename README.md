@@ -57,10 +57,10 @@ docker compose exec account-service \
   pocketbase superuser upsert admin@katalogku.id GantiPassword123 --dir=/pb_data
 ```
 
-3. **Import skema** — buka dashboard, lalu *Settings → Import collections → Load from JSON file*:
+3. **Periksa skema otomatis** — pada database baru koleksi diimpor oleh migrasi. Impor manual hanya jika diperlukan dan setelah memeriksa data yang sudah ada:
    - `http://IP_SERVER:8091/_/` → `pb_schema/product_collections.json`
    - `http://IP_SERVER:8092/_/` → `pb_schema/account_collections.json`
-4. **Isi data contoh** — buka `seed.http` di VS Code (ekstensi REST Client), ganti
+4. **Periksa data contoh** — lima produk diisi otomatis pada database baru. Jika perlu mengisi manual, buka `seed.http` di VS Code (ekstensi REST Client), ganti
    `@pbUrl` dan password, lalu klik *Send Request* satu per satu.
 5. **Uji API lewat gateway** — buka `api.http`, ganti `@baseUrl`, jalankan berurutan
    (register → login → favorit). Alternatif: import folder `postman/` ke Postman dan pilih
@@ -101,3 +101,11 @@ docker compose cp account-service:/pb_data ./backup-account
 
 > **Keamanan:** ganti semua password contoh, jangan commit `.env`, dan jangan membuka port
 > 8091/8092 ke internet — cukup gateway (8080) atau tunnel.
+
+## Penyiapan otomatis untuk database baru
+
+Saat `docker compose up -d --build` dijalankan pada database baru, migrasi menyiapkan koleksi products, users, favorites, aturan akses, dan lima produk contoh. Jika koleksi terkait sudah ada, migrasi melewati penyiapan awal agar tidak menggandakan produk atau menimpa koleksi tersebut. Migrasi hanya dijalankan sekali untuk setiap database.
+
+Akun admin tidak disimpan di GitHub. Setelah layanan berjalan, buat superuser pada product-service dan account-service dengan langkah pada bagian Menjalankan di atas. Gunakan password yang disepakati lewat jalur pribadi, bukan password contoh. Data yang ditambahkan di laptop tidak otomatis ikut Git; database baru di STB memperoleh lima produk contoh dari migrasi.
+
+Perubahan koleksi berikutnya harus diekspor dan disiapkan sebagai migrasi baru secara sengaja; pembuatan migrasi otomatis dari dashboard dinonaktifkan untuk menjaga file migrasi yang dipasang hanya-baca.
