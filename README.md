@@ -52,9 +52,9 @@ docker compose ps
 
 # 2. Buat superuser (admin dashboard) di kedua service
 docker compose exec product-service \
-  pocketbase superuser upsert admin@katalogku.id GantiPassword123 --dir=/pb_data
+  pocketbase superuser upsert admin@gmail.com admin123 --dir=/pb_data
 docker compose exec account-service \
-  pocketbase superuser upsert admin@katalogku.id GantiPassword123 --dir=/pb_data
+  pocketbase superuser upsert admin@gmail.com admin123 --dir=/pb_data
 ```
 
 3. **Periksa skema otomatis** — pada database baru koleksi diimpor oleh migrasi. Impor manual hanya jika diperlukan dan setelah memeriksa data yang sudah ada:
